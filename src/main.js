@@ -1,5 +1,3 @@
-/* globals AFRAME */
-
 import {createStore} from './store.js'
 import reducers from './reducers.js'
 import {heal} from './actions.js'
@@ -12,39 +10,33 @@ store.subscribe(() => {
 
 store.dispatch(heal({amount: 50}))
 
-const getRandomColor = () => {
-  console.log('getRandomColor')
-  const letters = '0123456789abcdef'
-  let color = '#'
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)]
-  }
-  return color
+const scene = document.querySelector('a-scene')
+const forest = document.createElement('a-entity')
+forest.setAttribute('shadow', 'receive: true')
+
+const makeTree = position => {
+  const tree = document.createElement('a-entity')
+  const scale = Math.random() + 1
+  tree.setAttribute('mixin', 'tree')
+  tree.setAttribute('position', position)
+  tree.setAttribute('scale', `${scale} ${scale} ${scale}`)
+  forest.appendChild(tree)
 }
 
-AFRAME.registerComponent('random-color', {
-  dependancies: ['material'],
-  init () {
-    this.el.setAttribute('material', 'color', getRandomColor())
-  }
-})
+for (let i = 0; i < 1500; i++) {
+  const radius = 10
+  const spred = 1000
+  const x = Math.random() * spred - (spred * 0.5)
+  const y = Math.random() * spred - (spred * 0.5)
 
-AFRAME.registerComponent('snap', {
-  dependencies: ['position'],
-  schema: {
-    offset: {type: 'vec3'},
-    snap: {type: 'vec3'}
-  },
-  init () {
-    this.originalPos = this.el.getAttribute('position')
-  },
-  update () {
-    const data = this.data
-    const pos = AFRAME.utils.clone(this.originalPos)
-    pos.x = Math.floor(pos.x / data.snap.x) * data.snap.x + data.offset.x
-    pos.y = Math.floor(pos.y / data.snap.y) * data.snap.y + data.offset.y
-    pos.z = Math.floor(pos.z / data.snap.z) * data.snap.z + data.offset.z
-
-    this.el.setAttribute('position', pos)
+  if (
+    (x < radius && x > -radius) &&
+    (y < radius && y > -radius)
+  ) {
+    continue
   }
-})
+
+  makeTree(`${x} 2 ${y}`)
+}
+
+scene.appendChild(forest)
