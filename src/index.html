@@ -7,22 +7,44 @@
     <script type=module>import './main.js'</script>
   </head>
   <body>
-    <a-scene>
+    <a-scene fog='type: linear; color: #000;'>
       <a-assets>
+        <a-asset-item id='tree-obj' src='./tree.obj'></a-asset-item>
+        <a-asset-item id='tree-mtl' src='./tree.mtl'></a-asset-item>
+
         <a-mixin id='voxel'
           geometry='primitive: box; depth: 1; height: 1; width: 1;'
           random-color
           snap='offset: 0.25 0.25 0.25; snap: 0.5 0.5 0.5'
-        />
+        ></a-mixin>
+
+        <a-mixin id='tree'
+          obj-model='obj: #tree-obj; mtl: #tree-mtl'
+          rotation='0 0 90'
+        ></a-mixin>
       </a-assets>
 
-      <a-entity mixin='voxel' position='0 0 -2' />
-      <a-entity mixin='voxel' position='2 0 -2'>
-        <a-animation attribute='rotation' to='0 360 0' repeat='indefinite' />
+      <!-- environment -->
+      <a-cylinder id='ground' color='olivedrab' radius='100' height='0.1' shadow='receive: true'></a-cylinder>
+      <a-sky color='paleturquoise' theta-length='90' radius='100'></a-sky>
+      <a-light type='hemisphere' color='#33c' groundColor='#3c3' intensity='0.5'></a-light>
+
+      <a-camera>
+        <a-entity light='type: spot; castShadow: true; intensity: 1; shadowMapHeight: 2048; shadowMapWidth: 2048;' position='0 1 2'></a-entity>
+      </a-camera>
+
+      <a-entity shadow='receive: true' material='fog: true'>
+        <a-entity mixin='voxel' position='0 0 -2'></a-entity>
+        <a-entity mixin='voxel' position='1 0 -1'>
+          <a-animation attribute='rotation' to='0 360 0' repeat='indefinite'></a-animation>
+        </a-entity>
+
+        <a-entity mixin='tree' position='0 2.5 -15' scale='1.2 1.2 1.2'></a-entity>
+        <a-entity mixin='tree' position='5 2 -5'></a-entity>
+        <a-entity mixin='tree' position='-8 2.2 -8'></a-entity>
       </a-entity>
 
-      <a-cylinder id='ground' color='olivedrab' radius='1000' height='0.1' />
-      <a-sky color='paleturquoise' theta-length='90' radius='30' />
+
     </a-scene>
   </body>
 </html>
