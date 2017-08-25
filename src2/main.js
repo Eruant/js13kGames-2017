@@ -2,7 +2,7 @@ import {createStore} from './store.js'
 import reducers from './reducers.js'
 import {heal} from './actions.js'
 
-import {grass} from './tiles.js'
+import {grass, dirt, water} from './tiles.js'
 
 const store = createStore(reducers)
 const tilesY = 10
@@ -28,6 +28,10 @@ canvas.height = height
 for (let y = 0; y < tilesY; y++) {
   for (let x = 0; x < tilesX; x++) {
     const isGrass = (y % 2 === 0 && x % 2 === 0) || (y % 2 === 1 && x % 2 === 1)
-    isGrass && ctx.putImageData(grass(), x * tileWidth, y * tileHeight)
+    ctx.putImageData(isGrass ? grass() : dirt(), x * tileWidth, y * tileHeight)
   }
 }
+
+ctx.putImageData(grass(), 0, 0)
+ctx.putImageData(dirt(), 8, 0)
+ctx.putImageData(water(), 16, 0)

@@ -1,32 +1,33 @@
-const drawPixel = ctx => (x, y) => ctx.fillRect(x, y, 1, 1)
+const makeCanvas = (width = 8, height = 8, color = 'red') => {
+  const canvas = document.createElement('canvas')
+  canvas.width = width
+  canvas.height = height
 
-export const grass = () => {
-  let data
+  const ctx = canvas.getContext('2d')
 
-  if (!data) {
-    const width = 8
-    const height = 8
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
+  ctx.fillStyle = color
+  ctx.fillRect(0, 0, width, height)
 
-    canvas.width = width
-    canvas.height = height
+  return ctx
+}
 
-    ctx.fillStyle = 'olivedrab'
-    ctx.fillRect(0, 0, width, height)
+const randomInt = max => Math.floor(Math.random() * max)
 
-    const p = drawPixel(ctx)
+const drawRandomPixel = ctx => ctx.fillRect(randomInt(8), randomInt(8), 1, 1)
 
-    ctx.fillStyle = 'olive'
-    p(2, 2)
-    p(2, 4)
-    p(0, 3)
-    p(5, 1)
-    p(4, 7)
-    p(6, 3)
+const makeTile = (color, altColor) => {
+  const ctx = makeCanvas(8, 8, color)
 
-    data = ctx.getImageData(0, 0, width, height)
+  ctx.fillStyle = altColor
+  for (let i = 0; i < 20; i++) {
+    drawRandomPixel(ctx)
   }
 
-  return data
+  const data = ctx.getImageData(0, 0, 8, 8)
+
+  return () => data
 }
+
+export const grass = makeTile('olivedrab', 'olive')
+export const dirt = makeTile('peru', 'burlywood')
+export const water = makeTile('turquoise', 'mediumturquoise')
