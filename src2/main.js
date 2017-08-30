@@ -3,6 +3,7 @@ import reducers from './reducers.js'
 import {heal} from './actions.js'
 
 import {grass, dirt, water} from './tiles.js'
+import {player} from './character.js'
 
 const store = createStore(reducers)
 const tilesY = 10
@@ -13,6 +14,7 @@ const width = tilesX * tileWidth
 const height = tilesY * tileHeight
 const canvas = document.createElement('canvas')
 const ctx = canvas.getContext('2d')
+const player1 = player()
 
 document.body.appendChild(canvas)
 
@@ -35,3 +37,5 @@ for (let y = 0; y < tilesY; y++) {
 ctx.putImageData(grass(), 0, 0)
 ctx.putImageData(dirt(), 8, 0)
 ctx.putImageData(water(), 16, 0)
+
+ctx.drawImage(player1, 25, 12)
